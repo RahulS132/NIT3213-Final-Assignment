@@ -27,13 +27,13 @@ class AppRepositoryTest {
 
     @Test
     fun `login forwards request to ApiService`() = runTest {
-        whenever(apiService.login(eq("sydney"), eq(LoginRequest("Rahul", "s8114019"))))
+        whenever(apiService.login(eq("sydney"), eq(LoginRequest("s8114019", "Rahul"))))
             .thenReturn(LoginResponse("topicXYZ"))
 
-        val result = repository.login("sydney", "Rahul", "s8114019")
+        val result = repository.login("sydney", "s8114019", "Rahul")
 
         assertEquals("topicXYZ", result.keypass)
-        verify(apiService).login("sydney", LoginRequest("Rahul", "s8114019"))
+        verify(apiService).login("sydney", LoginRequest("s8114019", "Rahul"))
     }
 
     @Test

@@ -40,8 +40,6 @@
         android:label="Details"
         tools:layout="@layout/fragment_details"
         xmlns:tools="http://schemas.android.com/tools" />
-        <!-- The selected Entity is passed via Bundle.putSerializable("entity", ...).
-             We don't use a typed NavArg here because Entity is a Serializable map
-             wrapper and the Navigation Component handles Serializable extras transparently. -->
+
 
 </navigation>

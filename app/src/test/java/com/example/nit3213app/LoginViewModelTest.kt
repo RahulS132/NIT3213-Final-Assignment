@@ -43,7 +43,7 @@ class LoginViewModelTest {
 
     @Test
     fun `blank campus produces Error state`() = runTest {
-        viewModel.login("", "Rahul", "s8114019")
+        viewModel.login("", "s8114019", "Rahul")
         val state = viewModel.loginState.value
         assertTrue(state is Resource.Error)
         assertEquals("Please choose a campus.", (state as Resource.Error).message)
@@ -51,10 +51,10 @@ class LoginViewModelTest {
 
     @Test
     fun `successful login emits Success with keypass`() = runTest {
-        whenever(repository.login("sydney", "Rahul", "s8114019"))
+        whenever(repository.login("sydney", "s8114019", "Rahul"))
             .thenReturn(LoginResponse(keypass = "topicABC"))
 
-        viewModel.login("sydney", "Rahul", "s8114019")
+        viewModel.login("sydney", "s8114019", "Rahul")
         advanceUntilIdle()
 
         val state = viewModel.loginState.value
@@ -66,10 +66,10 @@ class LoginViewModelTest {
     fun `404 response produces friendly error`() = runTest {
         val errorBody = "".toResponseBody(null)
         val httpException = HttpException(Response.error<Any>(404, errorBody))
-        whenever(repository.login("sydney", "Rahul", "wrong"))
+        whenever(repository.login("sydney", "s8114019", "wrong"))
             .thenThrow(httpException)
 
-        viewModel.login("sydney", "Rahul", "wrong")
+        viewModel.login("sydney", "s8114019", "wrong")
         advanceUntilIdle()
 
         val state = viewModel.loginState.value
@@ -84,10 +84,10 @@ class LoginViewModelTest {
     fun `401 response produces invalid credentials error`() = runTest {
         val errorBody = "".toResponseBody(null)
         val httpException = HttpException(Response.error<Any>(401, errorBody))
-        whenever(repository.login("sydney", "Rahul", "wrong"))
+        whenever(repository.login("sydney", "s8114019", "wrong"))
             .thenThrow(httpException)
 
-        viewModel.login("sydney", "Rahul", "wrong")
+        viewModel.login("sydney", "s8114019", "wrong")
         advanceUntilIdle()
 
         val state = viewModel.loginState.value
