@@ -1,3 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NIT3213 Final Assignment</string>
+    <string name="app_name">NIT3213 App</string>
+
+    <!-- Login screen -->
+    <string name="login_title">Welcome</string>
+    <string name="login_subtitle">Sign in with your first name and student ID</string>
+    <string name="login_username_hint">Username (first name)</string>
+    <string name="login_password_hint">Password (student ID)</string>
+    <string name="login_button">Login</string>
+
+    <!-- Dashboard screen -->
+    <string name="dashboard_title">Dashboard</string>
+    <string name="entity_total_format">%1$d entities</string>
+    <string name="error_missing_keypass">Missing keypass — please log in again.</string>
+
+    <!-- Details screen -->
+    <string name="details_title">Details</string>
+    <string name="details_property1_label">Property 1</string>
+    <string name="details_property2_label">Property 2</string>
+    <string name="details_description_label">Description</string>
 </resources>

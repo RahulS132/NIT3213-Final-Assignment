@@ -1,6 +1,7 @@
 package com.example.nit3213finalassignment
 
 import android.os.Bundle
+import com.example.nit3213app.R
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
