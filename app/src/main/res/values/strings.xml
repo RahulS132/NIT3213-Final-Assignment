@@ -7,10 +7,12 @@
     <string name="login_subtitle">Sign in with your first name and student ID</string>
     <string name="login_username_hint">Username (first name)</string>
     <string name="login_password_hint">Password (student ID)</string>
+    <string name="login_campus_hint">Campus</string>
     <string name="login_button">Login</string>
 
     <!-- Dashboard screen -->
     <string name="dashboard_title">Dashboard</string>
+    <string name="dashboard_topic_format">Topic: %1$s</string>
     <string name="entity_total_format">%1$d entities</string>
     <string name="error_missing_keypass">Missing keypass — please log in again.</string>
 

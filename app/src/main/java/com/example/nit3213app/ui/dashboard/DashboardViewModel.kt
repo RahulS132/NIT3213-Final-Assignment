@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,8 +26,16 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             _entitiesState.value = Resource.Loading
             try {
-                val response = repository.getDashboard(keypass)
-                _entitiesState.value = Resource.Success(response.entities)
+                val entities = repository.getDashboard(keypass)
+                _entitiesState.value = Resource.Success(entities)
+            } catch (e: HttpException) {
+                _entitiesState.value = Resource.Error(
+                    "Could not load dashboard: HTTP ${e.code()}"
+                )
+            } catch (e: IOException) {
+                _entitiesState.value = Resource.Error(
+                    "Network error: ${e.localizedMessage ?: "no connection"}"
+                )
             } catch (e: Exception) {
                 _entitiesState.value = Resource.Error(
                     e.localizedMessage ?: "Could not load dashboard."

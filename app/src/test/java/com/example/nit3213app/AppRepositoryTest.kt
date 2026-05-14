@@ -2,7 +2,6 @@ package com.example.nit3213app
 
 import com.example.nit3213app.data.api.ApiService
 import com.example.nit3213app.data.api.models.DashboardResponse
-import com.example.nit3213app.data.api.models.Entity
 import com.example.nit3213app.data.api.models.LoginRequest
 import com.example.nit3213app.data.api.models.LoginResponse
 import com.example.nit3213app.data.repository.AppRepository
@@ -15,10 +14,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
-/**
- * Light integration test for AppRepository — verifies it forwards calls to the
- * Retrofit ApiService with the right arguments.
- */
 class AppRepositoryTest {
 
     private lateinit var apiService: ApiService
@@ -42,16 +37,20 @@ class AppRepositoryTest {
     }
 
     @Test
-    fun `getDashboard forwards keypass to ApiService`() = runTest {
-        val response = DashboardResponse(
-            entities = listOf(Entity("a", "b", "c")),
-            entityTotal = 1
+    fun `getDashboard converts Map list to Entity list`() = runTest {
+        val rawEntities = listOf(
+            mapOf("name" to "Cheetah", "speed" to "fast", "description" to "Big cat"),
+            mapOf("name" to "Sloth", "speed" to "slow", "description" to "Slow mover")
         )
-        whenever(apiService.getDashboard("topicXYZ")).thenReturn(response)
+        whenever(apiService.getDashboard("topicXYZ"))
+            .thenReturn(DashboardResponse(entities = rawEntities, entityTotal = 2))
 
         val result = repository.getDashboard("topicXYZ")
 
-        assertEquals(response, result)
+        assertEquals(2, result.size)
+        assertEquals("Cheetah", result[0].fields["name"])
+        assertEquals("Big cat", result[0].description)
+        assertEquals("Cheetah", result[0].primaryLabel)
         verify(apiService).getDashboard("topicXYZ")
     }
 }

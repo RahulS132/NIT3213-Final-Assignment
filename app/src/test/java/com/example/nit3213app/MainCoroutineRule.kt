@@ -9,10 +9,6 @@ import kotlinx.coroutines.test.setMain
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
-/**
- * JUnit rule that swaps the Main dispatcher for a TestDispatcher so viewModelScope
- * coroutines run synchronously in tests.
- */
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainCoroutineRule(
     val testDispatcher: TestDispatcher = StandardTestDispatcher()

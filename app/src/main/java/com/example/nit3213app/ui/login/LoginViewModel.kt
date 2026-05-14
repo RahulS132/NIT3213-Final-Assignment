@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,22 +21,37 @@ class LoginViewModel @Inject constructor(
     private val _loginState = MutableStateFlow<Resource<String>>(Resource.Idle)
     val loginState: StateFlow<Resource<String>> = _loginState.asStateFlow()
 
-    val location: String = "sydney"
-
-    fun login(username: String, password: String) {
+    fun login(campus: String, username: String, password: String) {
         if (username.isBlank() || password.isBlank()) {
             _loginState.value = Resource.Error("Username and password cannot be empty")
+            return
+        }
+        if (campus.isBlank()) {
+            _loginState.value = Resource.Error("Please choose a campus.")
             return
         }
 
         viewModelScope.launch {
             _loginState.value = Resource.Loading
             try {
-                val response = repository.login(location, username.trim(), password.trim())
+                val response = repository.login(campus, username.trim(), password.trim())
                 _loginState.value = Resource.Success(response.keypass)
+            } catch (e: HttpException) {
+                _loginState.value = Resource.Error(
+                    when (e.code()) {
+                        401, 403 -> "Invalid username or password."
+                        404 -> "Endpoint not found (404). Try a different campus."
+                        in 500..599 -> "Server error (${e.code()}). Try again shortly."
+                        else -> "Login failed: HTTP ${e.code()}"
+                    }
+                )
+            } catch (e: IOException) {
+                _loginState.value = Resource.Error(
+                    "Network error: ${e.localizedMessage ?: "no connection"}"
+                )
             } catch (e: Exception) {
                 _loginState.value = Resource.Error(
-                    e.localizedMessage ?: "Login failed. Please check your credentials."
+                    e.localizedMessage ?: "Login failed. Please try again."
                 )
             }
         }

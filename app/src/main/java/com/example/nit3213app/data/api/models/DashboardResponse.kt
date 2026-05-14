@@ -4,6 +4,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class DashboardResponse(
-    val entities: List<Entity>,
+    val entities: List<Map<String, String>>,
     val entityTotal: Int
 )

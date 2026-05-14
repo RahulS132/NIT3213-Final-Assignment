@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.nit3213app.ui.login.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <action
+            android:id="@+id/action_login_to_dashboard"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.example.nit3213app.ui.dashboard.DashboardFragment"
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_dashboard"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <argument
+            android:name="keypass"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_dashboard_to_details"
+            app:destination="@id/detailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.example.nit3213app.ui.details.DetailsFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_details"
+        xmlns:tools="http://schemas.android.com/tools" />
+        <!-- The selected Entity is passed via Bundle.putSerializable("entity", ...).
+             We don't use a typed NavArg here because Entity is a Serializable map
+             wrapper and the Navigation Component handles Serializable extras transparently. -->
+
+</navigation>

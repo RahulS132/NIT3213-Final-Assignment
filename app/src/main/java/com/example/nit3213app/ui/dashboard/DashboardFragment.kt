@@ -1,64 +1,71 @@
 package com.example.nit3213app.ui.dashboard
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.nit3213app.R
 import com.example.nit3213app.data.api.models.Entity
-import com.example.nit3213app.databinding.ActivityDashboardBinding
-import com.example.nit3213app.ui.details.DetailsActivity
+import com.example.nit3213app.databinding.FragmentDashboardBinding
 import com.example.nit3213app.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DashboardActivity : AppCompatActivity() {
+class DashboardFragment : Fragment() {
 
-    companion object {
-        const val EXTRA_KEYPASS = "extra_keypass"
-    }
+    private var _binding: FragmentDashboardBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var binding: ActivityDashboardBinding
     private val viewModel: DashboardViewModel by viewModels()
 
     private val adapter by lazy {
         EntityAdapter(onItemClick = ::openDetails)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityDashboardBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeState()
 
-        val keypass = intent.getStringExtra(EXTRA_KEYPASS).orEmpty()
+        val keypass = arguments?.getString("keypass").orEmpty()
         if (keypass.isBlank()) {
-            binding.errorText.text = getString(com.example.nit3213app.R.string.error_missing_keypass)
+            binding.errorText.text = getString(R.string.error_missing_keypass)
             binding.errorText.visibility = View.VISIBLE
         } else {
+            binding.topicText.text = getString(R.string.dashboard_topic_format, keypass)
             viewModel.loadDashboard(keypass)
         }
     }
 
     private fun setupRecyclerView() {
-        binding.entitiesRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.entitiesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.entitiesRecyclerView.adapter = adapter
         binding.entitiesRecyclerView.addItemDecoration(
-            DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
+            DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         )
     }
 
     private fun observeState() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.entitiesState.collect { state ->
                     when (state) {
                         is Resource.Idle -> Unit
@@ -71,7 +78,7 @@ class DashboardActivity : AppCompatActivity() {
                             binding.errorText.visibility = View.GONE
                             adapter.submitList(state.data)
                             binding.totalText.text = getString(
-                                com.example.nit3213app.R.string.entity_total_format,
+                                R.string.entity_total_format,
                                 state.data.size
                             )
                             binding.totalText.visibility = View.VISIBLE
@@ -88,9 +95,14 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun openDetails(entity: Entity) {
-        val intent = Intent(this, DetailsActivity::class.java).apply {
-            putExtra(DetailsActivity.EXTRA_ENTITY, entity)
+        val args = Bundle().apply {
+            putSerializable("entity", entity)
         }
-        startActivity(intent)
+        findNavController().navigate(R.id.action_dashboard_to_details, args)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

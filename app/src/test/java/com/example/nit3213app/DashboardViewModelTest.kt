@@ -1,6 +1,5 @@
 package com.example.nit3213app
 
-import com.example.nit3213app.data.api.models.DashboardResponse
 import com.example.nit3213app.data.api.models.Entity
 import com.example.nit3213app.data.repository.AppRepository
 import com.example.nit3213app.ui.dashboard.DashboardViewModel
@@ -16,10 +15,6 @@ import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
-/**
- * Unit tests for DashboardViewModel. Confirms the success and error paths emit the
- * right Resource state.
- */
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModelTest {
 
@@ -35,14 +30,19 @@ class DashboardViewModelTest {
         viewModel = DashboardViewModel(repository)
     }
 
+    private fun entity(vararg pairs: Pair<String, String>): Entity {
+        val m = LinkedHashMap<String, String>()
+        pairs.forEach { (k, v) -> m[k] = v }
+        return Entity(m)
+    }
+
     @Test
     fun `loadDashboard emits Success with entity list`() = runTest {
         val entities = listOf(
-            Entity("p1", "p2", "desc"),
-            Entity("p1b", "p2b", "desc b")
+            entity("name" to "Cheetah", "speed" to "fast", "description" to "Big cat"),
+            entity("name" to "Sloth", "speed" to "slow", "description" to "Slow mover")
         )
-        whenever(repository.getDashboard("topicABC"))
-            .thenReturn(DashboardResponse(entities = entities, entityTotal = 2))
+        whenever(repository.getDashboard("topicABC")).thenReturn(entities)
 
         viewModel.loadDashboard("topicABC")
         advanceUntilIdle()

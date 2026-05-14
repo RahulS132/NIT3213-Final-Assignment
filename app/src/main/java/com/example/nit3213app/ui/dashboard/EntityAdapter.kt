@@ -2,6 +2,7 @@ package com.example.nit3213app.ui.dashboard
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -30,8 +31,17 @@ class EntityAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(entity: Entity) {
-            binding.property1Text.text = entity.property1.orEmpty()
-            binding.property2Text.text = entity.property2.orEmpty()
+            val summary = entity.summaryFields
+            binding.primaryText.text = summary.firstOrNull()?.second ?: "(unnamed)"
+
+            binding.fieldsContainer.removeAllViews()
+            summary.drop(1).forEach { (key, value) ->
+                val tv = TextView(binding.root.context).apply {
+                    text = "$key: $value"
+                    setTextAppearance(android.R.style.TextAppearance_Material_Body2)
+                }
+                binding.fieldsContainer.addView(tv)
+            }
             binding.root.setOnClickListener { onItemClick(entity) }
         }
     }

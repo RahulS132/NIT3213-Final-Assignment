@@ -14,11 +14,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import okhttp3.ResponseBody.Companion.toResponseBody
+import retrofit2.HttpException
+import retrofit2.Response
 
-/**
- * Unit tests for LoginViewModel. Verifies validation, loading state, and the success
- * and error paths against a mocked AppRepository.
- */
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
 
@@ -36,10 +35,18 @@ class LoginViewModelTest {
 
     @Test
     fun `blank credentials produce Error state`() = runTest {
-        viewModel.login("", "")
+        viewModel.login("sydney", "", "")
         val state = viewModel.loginState.value
         assertTrue(state is Resource.Error)
         assertEquals("Username and password cannot be empty", (state as Resource.Error).message)
+    }
+
+    @Test
+    fun `blank campus produces Error state`() = runTest {
+        viewModel.login("", "Rahul", "s8114019")
+        val state = viewModel.loginState.value
+        assertTrue(state is Resource.Error)
+        assertEquals("Please choose a campus.", (state as Resource.Error).message)
     }
 
     @Test
@@ -47,7 +54,7 @@ class LoginViewModelTest {
         whenever(repository.login("sydney", "Rahul", "s8114019"))
             .thenReturn(LoginResponse(keypass = "topicABC"))
 
-        viewModel.login("Rahul", "s8114019")
+        viewModel.login("sydney", "Rahul", "s8114019")
         advanceUntilIdle()
 
         val state = viewModel.loginState.value
@@ -56,21 +63,44 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `failed login emits Error with message`() = runTest {
+    fun `404 response produces friendly error`() = runTest {
+        val errorBody = "".toResponseBody(null)
+        val httpException = HttpException(Response.error<Any>(404, errorBody))
         whenever(repository.login("sydney", "Rahul", "wrong"))
-            .thenThrow(RuntimeException("401 unauthorized"))
+            .thenThrow(httpException)
 
-        viewModel.login("Rahul", "wrong")
+        viewModel.login("sydney", "Rahul", "wrong")
         advanceUntilIdle()
 
         val state = viewModel.loginState.value
         assertTrue(state is Resource.Error)
-        assertEquals("401 unauthorized", (state as Resource.Error).message)
+        assertEquals(
+            "Endpoint not found (404). Try a different campus.",
+            (state as Resource.Error).message
+        )
+    }
+
+    @Test
+    fun `401 response produces invalid credentials error`() = runTest {
+        val errorBody = "".toResponseBody(null)
+        val httpException = HttpException(Response.error<Any>(401, errorBody))
+        whenever(repository.login("sydney", "Rahul", "wrong"))
+            .thenThrow(httpException)
+
+        viewModel.login("sydney", "Rahul", "wrong")
+        advanceUntilIdle()
+
+        val state = viewModel.loginState.value
+        assertTrue(state is Resource.Error)
+        assertEquals(
+            "Invalid username or password.",
+            (state as Resource.Error).message
+        )
     }
 
     @Test
     fun `resetState returns to Idle`() {
-        viewModel.login("", "")
+        viewModel.login("sydney", "", "")
         viewModel.resetState()
         assertTrue(viewModel.loginState.value is Resource.Idle)
     }

@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "NIT3213-Final-Assignment"
+rootProject.name = "NIT3213App"
 include(":app")
