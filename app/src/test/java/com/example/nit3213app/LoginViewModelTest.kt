@@ -18,6 +18,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
 
+// Unit tests for LoginViewModel
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
 

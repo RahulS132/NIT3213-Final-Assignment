@@ -2,6 +2,7 @@ package com.example.nit3213app.data.api.models
 
 import java.io.Serializable
 
+// Domain model for Entity data
 data class Entity(
     val fields: LinkedHashMap<String, String> = LinkedHashMap()
 ) : Serializable {

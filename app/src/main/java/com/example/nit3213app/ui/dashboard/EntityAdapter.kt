@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nit3213app.data.api.models.Entity
 import com.example.nit3213app.databinding.ItemEntityBinding
 
+// Adapter for Entity list
 class EntityAdapter(
     private val onItemClick: (Entity) -> Unit
 ) : ListAdapter<Entity, EntityAdapter.EntityViewHolder>(DIFF_CALLBACK) {
 
+    // Inflate layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EntityViewHolder {
         val binding = ItemEntityBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -22,6 +24,7 @@ class EntityAdapter(
         return EntityViewHolder(binding)
     }
 
+    // Bind data to holder
     override fun onBindViewHolder(holder: EntityViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
@@ -30,6 +33,7 @@ class EntityAdapter(
         private val binding: ItemEntityBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        // Bind entity data to views
         fun bind(entity: Entity) {
             val summary = entity.summaryFields
             binding.primaryText.text = summary.firstOrNull()?.second ?: "(unnamed)"
@@ -47,6 +51,7 @@ class EntityAdapter(
     }
 
     companion object {
+        // Callback for item differences
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Entity>() {
             override fun areItemsTheSame(oldItem: Entity, newItem: Entity): Boolean =
                 oldItem === newItem

@@ -14,18 +14,21 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+// Hilt module for network dependencies
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     private const val BASE_URL = "https://nit3213api.onrender.com/"
 
+    // Provide Moshi instance
     @Provides
     @Singleton
     fun provideMoshi(): Moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
 
+    // Provide OkHttpClient instance
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
@@ -41,6 +44,7 @@ object NetworkModule {
             .build()
     }
 
+    // Provide Retrofit instance
     @Provides
     @Singleton
     fun provideRetrofit(client: OkHttpClient, moshi: Moshi): Retrofit =
@@ -50,6 +54,7 @@ object NetworkModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
 
+    // Provide ApiService instance
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService =

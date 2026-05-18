@@ -15,6 +15,7 @@ import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
+// Unit tests for DashboardViewModel
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModelTest {
 

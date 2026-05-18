@@ -14,6 +14,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
+// Unit tests for AppRepository
 class AppRepositoryTest {
 
     private lateinit var apiService: ApiService

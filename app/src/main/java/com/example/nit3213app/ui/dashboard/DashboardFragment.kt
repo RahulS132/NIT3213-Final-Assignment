@@ -19,6 +19,7 @@ import com.example.nit3213app.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+// Fragment to display dashboard entities
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
 

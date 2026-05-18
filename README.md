@@ -18,7 +18,7 @@
 ## Test Credentials
 - **Username:** `s8114019`
 - **Password:** `Rahul`
-- **Campus:** Sydney, Footscray, or ORT
+- **Campus:** Sydney
 
 ## API Details
 - **Base URL:** `https://nit3213api.onrender.com/`

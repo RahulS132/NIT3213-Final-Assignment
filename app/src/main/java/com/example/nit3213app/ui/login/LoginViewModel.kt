@@ -13,6 +13,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+// ViewModel for login screen logic
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val repository: AppRepository
@@ -21,6 +22,7 @@ class LoginViewModel @Inject constructor(
     private val _loginState = MutableStateFlow<Resource<String>>(Resource.Idle)
     val loginState: StateFlow<Resource<String>> = _loginState.asStateFlow()
 
+    // Process login request
     fun login(campus: String, username: String, password: String) {
         if (username.isBlank() || password.isBlank()) {
             _loginState.value = Resource.Error("Username and password cannot be empty")

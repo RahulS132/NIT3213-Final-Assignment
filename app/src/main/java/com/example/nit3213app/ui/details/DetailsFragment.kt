@@ -11,6 +11,7 @@ import com.example.nit3213app.data.api.models.Entity
 import com.example.nit3213app.databinding.FragmentDetailsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+// Fragment to display entity details
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
 

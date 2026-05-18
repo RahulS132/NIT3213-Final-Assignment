@@ -14,6 +14,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+// ViewModel for Dashboard screen
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val repository: AppRepository
@@ -22,6 +23,7 @@ class DashboardViewModel @Inject constructor(
     private val _entitiesState = MutableStateFlow<Resource<List<Entity>>>(Resource.Idle)
     val entitiesState: StateFlow<Resource<List<Entity>>> = _entitiesState.asStateFlow()
 
+    // Load dashboard data
     fun loadDashboard(keypass: String) {
         viewModelScope.launch {
             _entitiesState.value = Resource.Loading
